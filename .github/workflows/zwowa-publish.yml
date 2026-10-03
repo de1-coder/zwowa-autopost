@@ -1,0 +1,26 @@
+name: zwowa-publish
+on:
+  schedule: [{cron: '*/15 * * * *'}]
+  workflow_dispatch: {}
+permissions: {contents: write}
+concurrency: {group: zwowa-publish, cancel-in-progress: false}
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install requests requests_oauthlib
+      - run: python executor.py
+        env:
+          MEDIA_BASE_URL: ${{ secrets.MEDIA_BASE_URL }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+      - name: Save queue state
+        run: |
+          git config user.name zwowa-bot && git config user.email bot@zwowa.online
+          git add ZWOWA_MASTER_POSTING_QUEUE.sqlite && git commit -m "queue run $(date -u +%FT%TZ)" || true
+          git push
