@@ -1,4 +1,4 @@
 name: unzip
 on: workflow_dispatch
 permissions: {contents: write}
-jobs: {unzip: {runs-on: ubuntu-latest, steps: [{uses: actions/checkout@v4}, {run: "unzip -o zwowa-autopost.zip && cp -r zwowa-autopost/. . && rm -rf zwowa-autopost zwowa-autopost.zip .github/workflows/unzip.yml && git config user.name bot && git config user.email bot@users.noreply.github.com && git add -A && git commit -m unpack && git push"}]}}
+jobs: {unzip: {runs-on: ubuntu-latest, steps: [{uses: actions/checkout@v4}, {run: "unzip -o zwowa-autopost.zip && rm -rf zwowa-autopost/.github && cp -r zwowa-autopost/. . && rm -rf zwowa-autopost zwowa-autopost.zip && git config user.name bot && git config user.email bot@users.noreply.github.com && git add -A && git commit -m unpack && git push"}]}}
