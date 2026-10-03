@@ -54,6 +54,7 @@ def main():
     db=sqlite3.connect(DB);db.row_factory=sqlite3.Row
     due=db.execute("select * from placements where status in ('QUEUED','RETRY') and scheduled_at<=? order by scheduled_at limit 60",(now().astimezone(dt.timezone(dt.timedelta(hours=2))).isoformat(timespec='seconds'),)).fetchall()
     for r in due:
+        r=dict(r);r['caption']=r['caption'].replace('Friday 9 October\n\n','',1)
         p=r['platform'];fn,need=ADAPT[p]
         if any(not os.environ.get(k) for k in need):
             log(db,r['placement_id'],p,'skip','WAITING_AUTH','missing '+','.join(k for k in need if not os.environ.get(k)));continue
